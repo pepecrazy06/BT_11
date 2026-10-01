@@ -7,6 +7,7 @@
 # \*\*MSSV:\*\* 24110227  
 
 # \*\*Nội dung cập nhật:\*\* Hoàn thành yêu cầu bài tập 11, update giao diện và cập nhật them thông tin sản phẩm.
+# \*\*Tài khoản test:\*\* admin@huybooks.local; Huy@24110227
 
 
 
