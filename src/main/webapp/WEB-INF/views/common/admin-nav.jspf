@@ -1,0 +1,2 @@
+<%@ page pageEncoding="UTF-8" %>
+<div class="admin-navigation"><a class="${adminTab == 'dashboard' ? 'selected' : ''}" href="${pageContext.request.contextPath}/admin/dashboard">Tổng quan</a><a class="${adminTab == 'books' ? 'selected' : ''}" href="${pageContext.request.contextPath}/admin/books">Quản lý sách</a><a class="${adminTab == 'authors' ? 'selected' : ''}" href="${pageContext.request.contextPath}/admin/authors">Tác giả</a><a class="${adminTab == 'orders' ? 'selected' : ''}" href="${pageContext.request.contextPath}/admin/orders">Đơn hàng COD</a></div>

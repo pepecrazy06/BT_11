@@ -1,0 +1,9 @@
+<%@ page contentType="text/html;charset=UTF-8" pageEncoding="UTF-8" %>
+<%@ taglib prefix="c" uri="jakarta.tags.core" %>
+<%@ taglib prefix="fmt" uri="jakarta.tags.fmt" %>
+<%@ taglib prefix="fn" uri="jakarta.tags.functions" %>
+<fmt:setLocale value="vi_VN"/>
+<c:set var="pageTitle" value="Thông tin tác giả"/><c:set var="activeNav" value="admin"/>
+<%@ include file="../common/header.jspf" %>
+<main id="main" class="shell page-main"><c:set var="adminTab" value="authors"/><%@ include file="../common/admin-nav.jspf" %><div class="form-page" style="max-width:650px"><div class="page-heading"><div><p class="eyebrow">NGƯỜI ĐỨNG SAU NHỮNG TRANG SÁCH</p><h1>${empty author and empty param.author_id ? 'Thêm tác giả' : 'Chỉnh sửa tác giả'}</h1></div></div><c:if test="${not empty error}"><div class="error" role="alert"><c:out value="${error}"/></div></c:if><form class="form panel" method="post" action="${pageContext.request.contextPath}/admin/authors"><input type="hidden" name="token" value="${cartToken}"><input type="hidden" name="author_id" value="${not empty form ? fn:escapeXml(param.author_id) : author.author_id}"><label for="author_name">Tên tác giả *</label><input id="author_name" name="author_name" maxlength="200" required value="<c:out value='${not empty form ? param.author_name : author.author_name}'/>"><label for="date_of_birth">Ngày sinh</label><fmt:formatDate value="${author.date_of_birth}" pattern="yyyy-MM-dd" var="birthday"/><input id="date_of_birth" type="date" name="date_of_birth" value="<c:out value='${not empty form ? param.date_of_birth : birthday}'/>"><div class="form-actions"><button>Lưu tác giả</button><a class="button button-outline" href="${pageContext.request.contextPath}/admin/authors">Quay lại</a></div></form></div></main>
+<%@ include file="../common/footer.jspf" %>

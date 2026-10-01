@@ -1,0 +1,9 @@
+<%@ page contentType="text/html;charset=UTF-8" pageEncoding="UTF-8" %>
+<%@ taglib prefix="c" uri="jakarta.tags.core" %>
+<%@ taglib prefix="fmt" uri="jakarta.tags.fmt" %>
+<%@ taglib prefix="fn" uri="jakarta.tags.functions" %>
+<fmt:setLocale value="vi_VN"/>
+<c:set var="pageTitle" value="Xác thực email"/><c:set var="activeNav" value=""/>
+<%@ include file="/WEB-INF/views/common/header.jspf" %>
+<main id="main" class="shell"><div class="auth-layout"><aside class="auth-story"><div><p class="eyebrow">HUY BOOKS · GÓC NHỎ CHO BẠN ĐỌC</p><h2>Hành trình mới<br>bắt đầu từ<br>một trang sách.</h2><blockquote>“Sách là phép màu độc đáo<br>mà bạn có thể mang theo.”</blockquote></div><small>Thái Nhựt Huy · MSSV 24110227</small></aside><section class="auth-form"><p class="eyebrow">CHỈ CÒN MỘT BƯỚC NỮA</p><h1>Xác thực email</h1><p class="form-subtitle">Nhập mã 6 số đã gửi đến <strong><c:out value="${sessionScope.register_email}"/></strong>. Mã có hiệu lực trong 5 phút, tối đa 5 lần thử.</p><c:if test="${not empty error}"><div class="error" role="alert"><c:out value="${error}"/></div></c:if><c:choose><c:when test="${not empty sessionScope.register_email}"><form class="form" method="post" action="${pageContext.request.contextPath}/verify-otp"><input type="hidden" name="token" value="${cartToken}"><label for="otp">Mã xác thực</label><input class="otp-input" id="otp" name="otp" pattern="[0-9]{6}" inputmode="numeric" maxlength="6" autocomplete="one-time-code" placeholder="000000" required><button class="button-full">Xác thực & tạo tài khoản →</button></form></c:when><c:otherwise><p class="notice">Bạn chưa bắt đầu đăng ký hoặc phiên đã hết hạn.</p></c:otherwise></c:choose><p class="auth-switch">Cần mã mới? <a class="text-link" href="${pageContext.request.contextPath}/register">Đăng ký lại</a></p></section></div></main>
+<%@ include file="/WEB-INF/views/common/footer.jspf" %>

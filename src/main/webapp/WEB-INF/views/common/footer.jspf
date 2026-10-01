@@ -1,0 +1,7 @@
+<%@ page pageEncoding="UTF-8" %>
+<footer class="site-footer"><div class="shell footer-grid">
+<div><a class="footer-brand" href="${pageContext.request.contextPath}/home">huybooks<span>.</span></a><p>Góc nhỏ cho những tâm hồn ham đọc.<br>Mỗi trang sách, một hành trình mới.</p></div>
+<div><h3>Khám phá</h3><a href="${pageContext.request.contextPath}/home">Tủ sách của chúng tôi</a><a href="${pageContext.request.contextPath}/cart">Giỏ hàng</a><a href="${pageContext.request.contextPath}/orders">Theo dõi đơn hàng</a></div>
+<div><h3>Thông tin bài làm</h3><p>Thái Nhựt Huy<br><strong>MSSV: 24110227</strong><br>Lập trình Web · Mã đề 01</p></div>
+</div><div class="shell footer-bottom"><span>© 2026 Huy Books. Thái Nhựt Huy.</span><span>Đọc hôm nay, trưởng thành mỗi ngày.</span></div></footer>
+</body></html>
