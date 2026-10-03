@@ -9,6 +9,7 @@ import vn.iotstar.util.FormUtil;
 @WebServlet({"/admin/dashboard","/admin/orders"})
 public class AdminOrderServlet extends HttpServlet {
  protected void doGet(HttpServletRequest r,HttpServletResponse s)throws ServletException,IOException{
+  r.setAttribute("statusOptions",vn.iotstar.entity.OrderStatus.values());
   OrderService service=new OrderService();
   if("/admin/dashboard".equals(r.getServletPath())){
    r.setAttribute("stats",service.stats());r.setAttribute("orders",service.list(null,null,1));r.getRequestDispatcher("/WEB-INF/views/admin/dashboard.jsp").forward(r,s);return;

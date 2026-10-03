@@ -1,0 +1,13 @@
+<%@ page pageEncoding="UTF-8" %>
+<form class="filter-form" method="get">
+ <label for="order-status">Trạng thái đơn hàng</label>
+ <select id="order-status" name="status" aria-label="Lọc trạng thái">
+  <option value="">Tất cả trạng thái</option>
+  <c:forEach items="${statusOptions}" var="state">
+   <option value="${state.code}" ${param.status == state.code ? 'selected' : ''}>${state.label}</option>
+  </c:forEach>
+ </select>
+ <button class="button-small">Lọc đơn hàng</button>
+ <a class="text-link" href="${pageContext.request.contextPath}${activeNav == 'admin' ? '/admin/orders' : '/orders'}">Xem tất cả</a>
+</form>
+<p class="small muted">Chọn trạng thái để tìm đơn hàng. Tải lại trang để xem cập nhật mới nhất.</p>

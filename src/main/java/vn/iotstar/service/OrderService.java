@@ -58,20 +58,22 @@ public class OrderService {
    m.put("revenue",revenue==null?BigDecimal.ZERO:revenue);return m;
   }finally{em.close();}
  }
- public static boolean validStatus(String s){return s!=null && Set.of("PENDING","CONFIRMED","SHIPPING","DELIVERED","CANCELLED").contains(s);}
+ public static boolean validStatus(String s){return OrderStatus.from(s)!=null;}
  public void changeStatus(long id,Integer ownerId,boolean admin,String next){
   EntityManager em=JPAUtil.getEntityManager();EntityTransaction tx=em.getTransaction();
   try{
    tx.begin();PurchaseOrder o=em.find(PurchaseOrder.class,id,LockModeType.PESSIMISTIC_WRITE);
    if(o==null || (!admin && !Objects.equals(o.getUserId(),ownerId)))throw new IllegalArgumentException("Không tìm thấy đơn hàng.");
    String current=o.getStatus();
-   boolean allowed=admin?switch(current){case "PENDING"->Set.of("CONFIRMED","CANCELLED").contains(next);case "CONFIRMED"->Set.of("SHIPPING","CANCELLED").contains(next);case "SHIPPING"->"DELIVERED".equals(next);default->false;}:"PENDING".equals(current) && "CANCELLED".equals(next);
+   OrderStatus state=OrderStatus.from(current), target=OrderStatus.from(next);
+   boolean allowed=target!=null && (admin?state!=null && state.getNextStatuses().contains(target):"PENDING".equals(current) && "CANCELLED".equals(next));
    if(!allowed)throw new IllegalArgumentException("Không thể chuyển trạng thái đơn hàng này.");
-   if("CANCELLED".equals(next)){
+   if("CANCELLED".equals(next) || "RETURNED".equals(next)){
     List<OrderItem> items=new ArrayList<>(o.getItems());items.sort(Comparator.comparing(OrderItem::getBookId));
     for(OrderItem item:items){Book b=em.find(Book.class,item.getBookId(),LockModeType.PESSIMISTIC_WRITE);if(b!=null)b.setQuantity(Math.addExact(b.getQuantity()==null?0:b.getQuantity(),item.getQuantity()));}
    }
-   o.setStatus(next);if("DELIVERED".equals(next))o.setPaymentStatus("PAID");tx.commit();
+   o.setStatus(next);if("DELIVERED".equals(next))o.setPaymentStatus("PAID");
+   if("RETURNED".equals(next) && "PAID".equals(o.getPaymentStatus()))o.setPaymentStatus("REFUND_PENDING");tx.commit();
   }catch(RuntimeException e){if(tx.isActive())tx.rollback();throw e;}finally{em.close();}
  }
 }

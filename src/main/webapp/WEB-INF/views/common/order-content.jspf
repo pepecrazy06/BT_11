@@ -1,8 +1,23 @@
 <%@ page pageEncoding="UTF-8" %>
-
-<section class="order-details panel"><div class="order-topline"><div><h2>Đơn hàng #HB${order.id}</h2><span class="small muted">Đặt lúc ${order.createdLabel}</span></div><span class="status ${order.status}">${order.statusLabel}</span></div>
-<c:if test="${order.status != 'CANCELLED'}"><div class="steps"><span class="done"><b>1</b>Đã đặt</span><span class="${order.status != 'PENDING' ? 'done' : ''}"><b>2</b>Xác nhận</span><span class="${order.status == 'SHIPPING' or order.status == 'DELIVERED' ? 'done' : ''}"><b>3</b>Đang giao</span><span class="${order.status == 'DELIVERED' ? 'done' : ''}"><b>4</b>Đã nhận</span></div></c:if>
+<section class="order-details panel">
+<div class="order-topline"><div><h2>Đơn hàng #HB${order.id}</h2><span class="small muted">Đặt lúc ${order.createdLabel}</span></div><span class="status ${order.status}">${order.statusLabel}</span></div>
+<c:if test="${order.statusStep > 0}"><div class="steps order-steps">
+ <span class="${order.statusStep >= 1 ? 'done' : ''}"><b>1</b>Đơn hàng mới</span>
+ <span class="${order.statusStep >= 2 ? 'done' : ''}"><b>2</b>Đã xác nhận</span>
+ <span class="${order.statusStep >= 3 ? 'done' : ''}"><b>3</b>Chuẩn bị hàng</span>
+ <span class="${order.statusStep >= 4 ? 'done' : ''}"><b>4</b>Vận chuyển</span>
+ <span class="${order.statusStep >= 5 ? 'done' : ''}"><b>5</b>Giao hàng</span>
+ <span class="${order.statusStep >= 6 ? 'done' : ''}"><b>6</b>Đã giao</span>
+</div></c:if>
+<c:if test="${order.status == 'CANCELLED'}"><p class="order-notice">Đơn hàng đã hủy. Số lượng sách đã được hoàn lại kho.</p></c:if>
+<c:if test="${order.status == 'RETURNED'}"><p class="order-notice">Đã nhận lại hàng hoàn và hoàn kho. Nếu đã thu tiền COD, việc hoàn tiền cần được xử lý riêng.</p></c:if>
 <div class="order-info"><div><h3>THÔNG TIN NHẬN HÀNG</h3><p><strong><c:out value="${order.recipient}"/></strong><br><c:out value="${order.phone}"/><br><c:out value="${order.address}"/></p></div><div><h3>THANH TOÁN</h3><p>COD — Thanh toán khi nhận hàng<br><strong>${order.paymentLabel}</strong></p></div></div>
-<div class="table-scroll"><table><thead><tr><th>Sách</th><th>Đơn giá</th><th>Số lượng</th><th>Thành tiền</th></tr></thead><tbody><c:forEach items="${order.items}" var="item"><tr><td><c:out value="${item.title}"/></td><td><fmt:formatNumber value="${item.unitPrice}" maxFractionDigits="0"/> đ</td><td>${item.quantity}</td><td><strong><fmt:formatNumber value="${item.subtotal}" maxFractionDigits="0"/> đ</strong></td></tr></c:forEach></tbody></table></div><div class="summary-row summary-total"><span>Tổng tiền đơn hàng</span><strong><fmt:formatNumber value="${order.total}" maxFractionDigits="0"/> đ</strong></div>
+<div class="table-scroll"><table><thead><tr><th>Sách</th><th>Đơn giá</th><th>Số lượng</th><th>Thành tiền</th></tr></thead><tbody><c:forEach items="${order.items}" var="item"><tr><td><c:out value="${item.title}"/></td><td><fmt:formatNumber value="${item.unitPrice}" maxFractionDigits="0"/> đ</td><td>${item.quantity}</td><td><strong><fmt:formatNumber value="${item.subtotal}" maxFractionDigits="0"/> đ</strong></td></tr></c:forEach></tbody></table></div>
+<div class="summary-row summary-total"><span>Tổng tiền đơn hàng</span><strong><fmt:formatNumber value="${order.total}" maxFractionDigits="0"/> đ</strong></div>
 <c:if test="${activeNav != 'admin' and order.status == 'PENDING'}"><form method="post" action="${pageContext.request.contextPath}/orders" data-confirm="Hủy đơn hàng này? Số lượng sách sẽ được hoàn lại kho."><input type="hidden" name="token" value="${cartToken}"><input type="hidden" name="id" value="${order.id}"><button class="button-danger button-small">Hủy đơn hàng</button><span class="small muted">Chỉ hủy khi đơn chưa được xác nhận.</span></form></c:if>
-<c:if test="${activeNav == 'admin' and order.status != 'DELIVERED' and order.status != 'CANCELLED'}"><form class="filter-form" style="margin-top:25px" method="post" action="${pageContext.request.contextPath}/admin/orders"><input type="hidden" name="token" value="${cartToken}"><input type="hidden" name="id" value="${order.id}"><select name="status" aria-label="Trạng thái tiếp theo"><c:if test="${order.status == 'PENDING'}"><option value="CONFIRMED">Xác nhận đơn</option><option value="CANCELLED">Hủy đơn và hoàn kho</option></c:if><c:if test="${order.status == 'CONFIRMED'}"><option value="SHIPPING">Bắt đầu giao hàng</option><option value="CANCELLED">Hủy đơn và hoàn kho</option></c:if><c:if test="${order.status == 'SHIPPING'}"><option value="DELIVERED">Đã giao và đã thu tiền COD</option></c:if></select><button>Cập nhật</button></form></c:if></section>
+<c:if test="${activeNav == 'admin' and not empty order.nextStatuses}">
+<form class="filter-form" style="margin-top:25px" method="post" action="${pageContext.request.contextPath}/admin/orders" data-confirm="Xác nhận cập nhật trạng thái? Đơn hàng hoàn chỉ được xác nhận sau khi đã nhận lại sách.">
+<input type="hidden" name="token" value="${cartToken}"><input type="hidden" name="id" value="${order.id}">
+<select name="status" aria-label="Trạng thái tiếp theo"><c:forEach items="${order.nextStatuses}" var="state"><option value="${state.code}">${state.label}</option></c:forEach></select>
+<button>Cập nhật trạng thái</button>
+</form></c:if></section>

@@ -6,7 +6,8 @@
 
 # \*\*MSSV:\*\* 24110227  
 
-# \*\*Nội dung cập nhật:\*\* Hoàn thành yêu cầu bài tập 11, update giao diện và cập nhật them thông tin sản phẩm.
+# \*\*Nội dung cập nhật (3/10/2026):\*\* Hoàn thành chức năng lịch sử đặt hàng lọc theo trạng thái: đơn hàng mới, đã xác nhận, chuẩn bị hàng, vận chuyện, giao hàng, đã giao, đơn hàng hủy, đơn hàng hoàn.
+
 # \*\*Tài khoản test:\*\* admin@huybooks.local; Huy@24110227
 
 

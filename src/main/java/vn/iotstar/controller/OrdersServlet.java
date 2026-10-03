@@ -10,6 +10,7 @@ import vn.iotstar.util.FormUtil;
 public class OrdersServlet extends HttpServlet {
  protected void doGet(HttpServletRequest r,HttpServletResponse s)throws ServletException,IOException{
   User u=(User)r.getSession().getAttribute("account");if(u==null){s.sendRedirect(r.getContextPath()+"/login");return;}
+  r.setAttribute("statusOptions",vn.iotstar.entity.OrderStatus.values());
   OrderService service=new OrderService();String status=r.getParameter("status");long count=service.count(u.getId(),status);int pages=Math.max(1,(int)Math.ceil(count/10.0)),page=Math.min(FormUtil.page(r.getParameter("page")),pages);
   r.setAttribute("orders",service.list(u.getId(),status,page));r.setAttribute("total",count);r.setAttribute("currentPage",page);r.setAttribute("totalPage",pages);
   r.getRequestDispatcher("/WEB-INF/views/orders.jsp").forward(r,s);

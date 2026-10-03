@@ -19,7 +19,9 @@ public class PurchaseOrder {
  @Column(nullable=false,precision=19,scale=2) private BigDecimal total;
  @OneToMany(mappedBy="order",cascade=CascadeType.ALL) private List<OrderItem> items=new ArrayList<>();
 
- @Transient public String getStatusLabel(){return switch(status){case "PENDING"->"Chờ xác nhận";case "CONFIRMED"->"Đã xác nhận";case "SHIPPING"->"Đang giao";case "DELIVERED"->"Đã giao";case "CANCELLED"->"Đã hủy";default->status;};}
- @Transient public String getPaymentLabel(){return "PAID".equals(paymentStatus)?"Đã thu tiền":"Chưa thanh toán";}
+ @Transient public String getStatusLabel(){OrderStatus s=OrderStatus.from(status);return s==null?status:s.getLabel();}
+ @Transient public String getPaymentLabel(){return "PAID".equals(paymentStatus)?"Đã thu tiền":("REFUND_PENDING".equals(paymentStatus)?"Chờ hoàn tiền":"Chưa thanh toán");}
+ @Transient public int getStatusStep(){OrderStatus s=OrderStatus.from(status);return s==null?0:s.getStep();}
+ @Transient public List<OrderStatus> getNextStatuses(){OrderStatus s=OrderStatus.from(status);return s==null?List.of():s.getNextStatuses();}
  @Transient public String getCreatedLabel(){return createdAt.format(java.time.format.DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm"));}
 }
